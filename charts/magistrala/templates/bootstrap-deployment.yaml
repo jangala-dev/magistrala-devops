@@ -70,6 +70,12 @@ spec:
               value: {{ .Values.postgresqlbootstrap.password | quote }}
             - name: MG_BOOTSTRAP_DB_NAME
               value: {{ .Values.postgresqlbootstrap.database | quote }}
+            - name: MG_SPICEDB_HOST
+              value: {{ .Release.Name }}-spicedb-envoy
+            - name: MG_SPICEDB_PORT
+              value: {{ .Values.spicedb.grpc.port | quote}}
+            - name: MG_SPICEDB_PRE_SHARED_KEY
+              value: {{.Values.spicedb.grpc.presharedKey | quote }}
 
           ports:
             - containerPort: {{ .Values.bootstrap.httpPort }}

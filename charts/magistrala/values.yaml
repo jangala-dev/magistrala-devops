@@ -52,7 +52,7 @@ envoy:
 jaeger:
   fullnameOverride: magistrala-jaeger
   provisionDataStore:
-    cassandra: true
+    cassandra: false
   agent:
     enabled: false
   allInOne:
@@ -61,7 +61,7 @@ jaeger:
     type: cassandra
   cassandra:
     persistence:
-      enabled: true
+      enabled: false
       storageClass: "do-block-storage"
       accessModes:
         - ReadWriteOnce
@@ -406,7 +406,7 @@ postgresqlbootstrap:
           postgresql: *postgresqlBootstrapPort
 
 certs:
-  enabled: true
+  enabled: false
   image:
     {}
     # pullSecrets: {}
@@ -524,7 +524,7 @@ postgresqljournal:
 
 timescaledb:
   ## If you want to use an external database, set this to false and change host & port to external postgresql server host & port respectively
-  enabled: true
+  enabled: false
   name: timescalerw
   host: timescalerw
   port: &messagesRwTimescalePort 5432
@@ -541,7 +541,7 @@ timescaledb:
     # jaegerTraceRatio: 1.0
     # sendTelemetry: true
     # logLevel: "info"
-    enabled: true
+    enabled: false
     http: {port: 9011}
     # nodeSelector: {}
     # affinity: {}
@@ -559,7 +559,7 @@ timescaledb:
     # nodeSelector: {}
     # affinity: {}
     # tolerations: {}
-    enabled: true
+    enabled: false
     http: {port: 9012}
   ## Configurations of Bitnami postgres
   global:
