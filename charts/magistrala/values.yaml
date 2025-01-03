@@ -52,7 +52,7 @@ envoy:
 jaeger:
   fullnameOverride: magistrala-jaeger
   provisionDataStore:
-    cassandra: false
+    cassandra: true
   agent:
     enabled: false
   allInOne:
@@ -61,8 +61,8 @@ jaeger:
     type: cassandra
   cassandra:
     persistence:
-      enabled: false
-      storageClass: "do-block-storage"
+      enabled: true
+      # storageClass: "do-block-storage"
       accessModes:
         - ReadWriteOnce
       size: 10Gi
