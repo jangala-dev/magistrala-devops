@@ -23,11 +23,6 @@ ingress:
   enabled: true
   annotations: {}
   labels: {}
-  # Uncomment this block for TLS support in public ingress
-  # hostname: ""
-  # tls:
-  #   hostname: ""
-  #   secret: "magistrala-server"
 
 nginxInternal:
   image:
