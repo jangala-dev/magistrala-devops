@@ -68,6 +68,12 @@ spec:
               value: {{ default .Values.defaults.logLevel .Values.things.logLevel | quote }}
             - name: MG_AUTH_GRPC_URL
               value: {{ .Release.Name }}-envoy:{{ .Values.auth.grpcPort }}
+            - name: MG_SPICEDB_HOST
+              value: {{ .Release.Name }}-spicedb-envoy
+            - name: MG_SPICEDB_PORT
+              value: {{ .Values.spicedb.grpc.port | quote}}
+            - name: MG_SPICEDB_PRE_SHARED_KEY
+              value: {{.Values.spicedb.grpc.presharedKey | quote }}
           ports:
             - containerPort: {{ .Values.things.httpPort }}
               protocol: TCP
