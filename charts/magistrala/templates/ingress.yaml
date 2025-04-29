@@ -17,23 +17,25 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "{{ .Values.ingress.hostname }}"
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-ui
+                name: {{ $.Release.Name }}-ui
                 port:
-                  number: {{ .Values.ui.port }}
+                  number: {{ $.Values.ui.port }}
           - path: /health
             pathType: Exact
             backend:
               service:
-                name: {{ .Release.Name }}-things
+                name: {{ $.Release.Name }}-things
                 port:
-                  number: {{ .Values.things.httpPort }}
+                  number: {{ $.Values.things.httpPort }}
+  {{- end}}
 {{- if .Values.ingress.tls }}
   tls:
     - hosts:
@@ -57,16 +59,18 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "{{ .Values.ingress.hostname }}"
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: /((users|groups)/(.+)/(channels|things))
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-users
+                name: {{ $.Release.Name }}-users
                 port:
-                  number: {{ .Values.users.httpPort }}
+                  number: {{ $.Values.users.httpPort }}
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -82,16 +86,18 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "{{ .Values.ingress.hostname }}"
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: /((channels|things)/(.+)/(users|groups))
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-things
+                name: {{ $.Release.Name }}-things
                 port:
-                  number: {{ .Values.things.httpPort }}
+                  number: {{ $.Values.things.httpPort }}
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -107,16 +113,18 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "{{ .Values.ingress.hostname }}"
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: /((users)/(.+)/(domains))
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-users
+                name: {{ $.Release.Name }}-users
                 port:
-                  number: {{ .Values.users.httpPort }}
+                  number: {{ $.Values.users.httpPort }}
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -132,16 +140,18 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "{{ .Values.ingress.hostname }}"
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: /((domains)/(.+)/(users))
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-auth
+                name: {{ $.Release.Name }}-auth
                 port:
-                  number: {{ .Values.auth.httpPort }}
+                  number: {{ $.Values.auth.httpPort }}
+  {{- end }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -159,62 +169,64 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "{{ .Values.ingress.hostname }}"
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: /(domains.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-auth
+                name: {{ $.Release.Name }}-auth
                 port:
-                  number: {{ .Values.auth.httpPort }}
+                  number: {{ $.Values.auth.httpPort }}
           - path: /((users|groups|password|authorize).*|oauth/callback/[^/]+)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-users
+                name: {{ $.Release.Name }}-users
                 port:
-                  number: {{ .Values.users.httpPort }}
+                  number: {{ $.Values.users.httpPort }}
           - path: /((things|channels|connect|disconnect|identify).*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-things
+                name: {{ $.Release.Name }}-things
                 port:
-                  number: {{ .Values.things.httpPort }}
+                  number: {{ $.Values.things.httpPort }}
           - path: /(invitations.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-invitations
+                name: {{ $.Release.Name }}-invitations
                 port:
-                  number: {{ .Values.invitations.httpPort }}
+                  number: {{ $.Values.invitations.httpPort }}
           - path: /(journal.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-journal
+                name: {{ $.Release.Name }}-journal
                 port:
-                  number: {{ .Values.journal.httpPort }}
-{{- if .Values.certs.enabled }}
+                  number: {{ $.Values.journal.httpPort }}
+{{- if $.Values.certs.enabled }}
           - path: /((certs|serials).*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-certs
+                name: {{ $.Release.Name }}-certs
                 port:
-                  number: {{ .Values.certs.httpPort }}
+                  number: {{ $.Values.certs.httpPort }}
 {{- end }}
-{{- if .Values.bootstrap.enabled }}
+{{- if $.Values.bootstrap.enabled }}
           - path: /bootstrap/?(.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-bootstrap
+                name: {{ $.Release.Name }}-bootstrap
                 port:
-                  number: {{ .Values.bootstrap.httpPort }}
+                  number: {{ $.Values.bootstrap.httpPort }}
 {{- end }}
+  {{- end }}
 {{- if .Values.ingress.tls }}
   tls:
     - hosts:
@@ -246,22 +258,23 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: "{{ .Values.ingress.hostname }}"
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . | quote }}
       http:
         paths:
-          {{- if and (ne .Values.nginxInternal.mtls.tls "") (ne .Values.nginxInternal.mtls.intermediateCrt "") }}
+          {{- if and (ne $.Values.nginxInternal.mtls.tls "") (ne $.Values.nginxInternal.mtls.intermediateCrt "") }}
           - path: /(http/?.*)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-nginx-internal
+                name: {{ $.Release.Name }}-nginx-internal
                 port:
                   number: 80
           - path: /(mqtt)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-nginx-internal
+                name: {{ $.Release.Name }}-nginx-internal
                 port:
                   number: 80
           {{- else }}
@@ -269,17 +282,18 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-adapter-http
+                name: {{ $.Release.Name }}-adapter-http
                 port:
-                  number: {{ .Values.adapter_http.httpPort }}
+                  number: {{ $.Values.adapter_http.httpPort }}
           - path: /(mqtt)
             pathType: ImplementationSpecific
             backend:
               service:
-                name: {{ .Release.Name }}-mqtt
+                name: {{ $.Release.Name }}-mqtt
                 port:
-                  number: {{ default .Values.mqtt.adapter.wsPort }}
+                  number: {{ default $.Values.mqtt.adapter.wsPort }}
           {{- end }}
+  {{- end }}
 {{- if .Values.ingress.tls }}
   tls:
     - hosts:
