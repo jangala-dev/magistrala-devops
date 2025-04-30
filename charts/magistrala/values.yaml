@@ -190,7 +190,7 @@ spicedb:
   image:
     pullSecrets: {}
     repository: authzed/spicedb
-    tag: latest
+    tag: v1.39.1
     # pullPolicy: "IfNotPresent"
   grpc:
     presharedKey: "helloworld"
