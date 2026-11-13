@@ -1,5 +1,6 @@
 # Copyright (c) Abstract Machines
 # SPDX-License-Identifier: Apache-2.0
+{{- if .Values.journal.enabled }}
 
 apiVersion: v1
 kind: Service
@@ -13,3 +14,4 @@ spec:
     - protocol: TCP
       port: {{ .Values.journal.httpPort }}
       name: {{ .Release.Name }}-journal-http
+{{- end }}
