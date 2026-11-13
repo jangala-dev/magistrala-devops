@@ -201,6 +201,7 @@ spec:
                 name: {{ $.Release.Name }}-invitations
                 port:
                   number: {{ $.Values.invitations.httpPort }}
+{{- if $.Values.journal.enabled }}
           - path: /(journal.*)
             pathType: ImplementationSpecific
             backend:
@@ -208,6 +209,7 @@ spec:
                 name: {{ $.Release.Name }}-journal
                 port:
                   number: {{ $.Values.journal.httpPort }}
+{{- end }}
 {{- if $.Values.certs.enabled }}
           - path: /((certs|serials).*)
             pathType: ImplementationSpecific
